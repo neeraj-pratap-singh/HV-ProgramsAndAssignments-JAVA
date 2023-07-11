@@ -1,3 +1,4 @@
+// Create a menu driven command-line based application in Java to take an integer number N as input from the user and display if the given number is an Even Number or the Odd Number.
 import java.util.Scanner;
 
 public class EvenOddChecker {

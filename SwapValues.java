@@ -1,3 +1,4 @@
+// Take an integer number a and b as input from the user. Using your Java skills to swap their values and print the output.
 import java.util.Scanner;
 
 public class SwapValues {
