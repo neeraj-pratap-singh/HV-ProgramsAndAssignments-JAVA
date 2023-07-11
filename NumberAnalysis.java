@@ -1,3 +1,4 @@
+// Find Smallest, Largest and Average from given three integers
 import java.util.Scanner;
 
 public class NumberAnalysis {
