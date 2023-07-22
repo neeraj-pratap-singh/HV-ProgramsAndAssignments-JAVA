@@ -10,6 +10,7 @@ public class CSVReader {
         String line;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
+            reader.readLine();
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 for (String value : data) {
