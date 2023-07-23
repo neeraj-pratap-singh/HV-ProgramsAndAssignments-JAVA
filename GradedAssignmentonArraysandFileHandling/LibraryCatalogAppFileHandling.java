@@ -79,10 +79,10 @@ public class LibraryCatalogAppFileHandling {
         System.out.println("-------------------------------------------------");
         System.out.println("List of all Books");
         System.out.println("-------------------------------------------------");
-        System.out.println("Book ID\t\tBook Title\t\tAuthor\t\tAvailability\tIssue Date");
+        // System.out.println("Book ID\t\tBook Title\t\tAuthor\t\tAvailability\tIssue Date");
 
         for (String[] book : catalog) {
-            if (book != null) {
+            if (book != null && book[0] != null && book[1] != null && book[2] != null && book[3] != null) {
                 System.out.printf("%-8s\t%-20s\t%-15s\t%-15s\t%s\n", book[0], book[1], book[2], book[3], book[4]);
             }
         }
@@ -219,7 +219,7 @@ public class LibraryCatalogAppFileHandling {
     private static void saveCatalogToCSV() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(CSV_FILE_PATH))) {
             for (String[] book : catalog) {
-                if (book != null) {
+                if (book != null && book[0] != null && book[1] != null && book[2] != null && book[3] != null) {
                     String line = String.join(",", book);
                     writer.write(line);
                     writer.newLine();
