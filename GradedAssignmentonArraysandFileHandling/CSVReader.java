@@ -6,10 +6,11 @@ import java.io.IOException;
 
 public class CSVReader {
     public static void main(String[] args) {
-        String csvFile = "catalog.csv"; // Replace "data.csv" with the actual CSV file name
+        String csvFile = "./GradedAssignmentonArraysandFileHandling/catalog.csv"; // Replace "data.csv" with the actual CSV file name
         String line;
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
+        try{
+            BufferedReader reader = new BufferedReader(new FileReader(csvFile));
             reader.readLine();
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");

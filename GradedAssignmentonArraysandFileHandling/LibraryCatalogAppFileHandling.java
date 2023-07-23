@@ -12,7 +12,7 @@ public class LibraryCatalogAppFileHandling {
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MMM-yyyy");
 
     private static String[][] catalog = new String[MAX_BOOKS][5];
-    private static final String CSV_FILE_PATH = "catalog.csv";
+    private static final String CSV_FILE_PATH = "./GradedAssignmentonArraysandFileHandling/catalog.csv";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
