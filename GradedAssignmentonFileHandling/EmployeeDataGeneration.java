@@ -44,23 +44,29 @@ class Employee {
 
 public class EmployeeDataGeneration {
     public static void main(String[] args) {
-        // Task 1: Data Generation
-        List<Employee> employees = generateEmployeeData();
+        try {
+            // Task 1: Data Generation
+            List<Employee> employees = generateEmployeeData();
 
-        // Print the employee information
-        System.out.println("Employee Information:");
-        for (Employee employee : employees) {
-            System.out.println(employee);
+            // Print the employee information
+            System.out.println("Employee Information:");
+            for (Employee employee : employees) {
+                System.out.println(employee);
+            }
+
+            // Task 2: CSV File Writing
+            String outputFilePath = "output.csv";
+            writeEmployeeDataToCSV(employees, outputFilePath);
+
+            System.out.println("Employee data has been written to 'output.csv'.");
+
+            // Task 3: CSV File Verification
+            readAndVerifyCSVFile(outputFilePath);
+        } catch (IOException e) {
+            System.err.println("An error occurred while performing file I/O: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred: " + e.getMessage());
         }
-
-        // Task 2: CSV File Writing
-        String outputFilePath = "output.csv";
-        writeEmployeeDataToCSV(employees, outputFilePath);
-
-        System.out.println("Employee data has been written to 'output.csv'.");
-
-        // Task 3: CSV File Verification
-        readAndVerifyCSVFile(outputFilePath);
     }
 
     public static List<Employee> generateEmployeeData() {
@@ -73,7 +79,7 @@ public class EmployeeDataGeneration {
         return employees;
     }
 
-    public static void writeEmployeeDataToCSV(List<Employee> employees, String filePath) {
+    public static void writeEmployeeDataToCSV(List<Employee> employees, String filePath) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             // Write the header row
             writer.write("Employee ID,Employee Name,Department,Salary");
@@ -87,20 +93,16 @@ public class EmployeeDataGeneration {
                         + employee.getSalary());
                 writer.newLine();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
-    public static void readAndVerifyCSVFile(String filePath) {
+    public static void readAndVerifyCSVFile(String filePath) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             System.out.println("\nContents of 'output.csv':");
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
