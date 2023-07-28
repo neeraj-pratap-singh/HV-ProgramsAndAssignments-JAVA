@@ -68,7 +68,7 @@ public class EmployeeDataGeneration {
                         Collections.sort(employees, Comparator.comparingDouble(Employee::getSalary));
 
                         // Task 2: CSV File Writing
-                        writeEmployeeDataToCSV(employees, outputFilePath);
+                        writeEmployeeDataToCSV(employees, outputFilePath, scanner);
                         System.out.println("Employee data has been written to 'output.csv'.");
                         break;
                     case 3:
@@ -99,7 +99,17 @@ public class EmployeeDataGeneration {
         return employees;
     }
 
-    public static void writeEmployeeDataToCSV(List<Employee> employees, String filePath) throws IOException {
+    public static void writeEmployeeDataToCSV(List<Employee> employees, String filePath, Scanner scanner) throws IOException {
+        File outputFile = new File(filePath);
+        if (outputFile.exists()) {
+            System.out.print("The file 'output.csv' already exists. Do you want to overwrite it? (yes/no): ");
+            String response = scanner.next().toLowerCase();
+            if (!response.equals("yes")) {
+                System.out.println("File not overwritten. Returning to the menu.");
+                return;
+            }
+        }
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             // Write the header row
             writer.write("Employee ID,Employee Name,Department,Salary");
@@ -134,4 +144,3 @@ public class EmployeeDataGeneration {
         System.out.println("4. Exit");
     }
 }
-
