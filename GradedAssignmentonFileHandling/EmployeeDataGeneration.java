@@ -2,6 +2,8 @@ package GradedAssignmentonFileHandling;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 class Employee {
@@ -48,11 +50,14 @@ public class EmployeeDataGeneration {
             // Task 1: Data Generation
             List<Employee> employees = generateEmployeeData();
 
-            // Print the employee information
-            System.out.println("Employee Information:");
+            // Print the employee information before sorting
+            System.out.println("Employee Information (Before Sorting):");
             for (Employee employee : employees) {
                 System.out.println(employee);
             }
+
+            // Task 5: Bonus Challenge - Sort employees based on salary in ascending order
+            Collections.sort(employees, Comparator.comparingDouble(Employee::getSalary));
 
             // Task 2: CSV File Writing
             String outputFilePath = "output.csv";
@@ -106,3 +111,4 @@ public class EmployeeDataGeneration {
         }
     }
 }
+
