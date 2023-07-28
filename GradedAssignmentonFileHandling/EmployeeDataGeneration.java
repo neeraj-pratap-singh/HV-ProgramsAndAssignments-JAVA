@@ -1,5 +1,8 @@
 package GradedAssignmentonFileHandling;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,5 +61,31 @@ public class EmployeeDataGeneration {
         for (Employee employee : employees) {
             System.out.println(employee);
         }
+
+        // Task 2: Write employee information to a CSV file
+        String outputFilePath = "output.csv";
+        writeEmployeeDataToCSV(employees, outputFilePath);
+
+        System.out.println("Employee data has been written to 'output.csv'.");
+    }
+
+    public static void writeEmployeeDataToCSV(List<Employee> employees, String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            // Write the header row
+            writer.write("Employee ID,Employee Name,Department,Salary");
+            writer.newLine();
+
+            // Write employee data rows
+            for (Employee employee : employees) {
+                writer.write(employee.getEmployeeId() + ","
+                        + employee.getEmployeeName() + ","
+                        + employee.getDepartment() + ","
+                        + employee.getSalary());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
+
