@@ -1,8 +1,6 @@
 package GradedAssignmentonFileHandling;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,15 +44,8 @@ class Employee {
 
 public class EmployeeDataGeneration {
     public static void main(String[] args) {
-        // Create an ArrayList to store employee information
-        List<Employee> employees = new ArrayList<>();
-
-        // Generate data for five employees and add them to the ArrayList
-        employees.add(new Employee(101, "Neeraj", "HR", 50000.0));
-        employees.add(new Employee(102, "Ajay", "Finance", 60000.0));
-        employees.add(new Employee(103, "Sohail", "IT", 55000.0));
-        employees.add(new Employee(104, "Sunita", "Marketing", 52000.0));
-        employees.add(new Employee(105, "Minakshee", "Operations", 48000.0));
+        // Task 1: Data Generation
+        List<Employee> employees = generateEmployeeData();
 
         // Print the employee information
         System.out.println("Employee Information:");
@@ -62,11 +53,24 @@ public class EmployeeDataGeneration {
             System.out.println(employee);
         }
 
-        // Task 2: Write employee information to a CSV file
+        // Task 2: CSV File Writing
         String outputFilePath = "output.csv";
         writeEmployeeDataToCSV(employees, outputFilePath);
 
         System.out.println("Employee data has been written to 'output.csv'.");
+
+        // Task 3: CSV File Verification
+        readAndVerifyCSVFile(outputFilePath);
+    }
+
+    public static List<Employee> generateEmployeeData() {
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee(101, "Neeraj", "HR", 50000.0));
+        employees.add(new Employee(102, "Ajay", "Finance", 60000.0));
+        employees.add(new Employee(103, "Sohail", "IT", 55000.0));
+        employees.add(new Employee(104, "Sunita", "Marketing", 52000.0));
+        employees.add(new Employee(105, "Minakshee", "Operations", 48000.0));
+        return employees;
     }
 
     public static void writeEmployeeDataToCSV(List<Employee> employees, String filePath) {
@@ -87,5 +91,16 @@ public class EmployeeDataGeneration {
             e.printStackTrace();
         }
     }
-}
 
+    public static void readAndVerifyCSVFile(String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            System.out.println("\nContents of 'output.csv':");
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
