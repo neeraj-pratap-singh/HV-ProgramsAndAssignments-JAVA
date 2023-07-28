@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Scanner;
 
 class Employee {
     private int employeeId;
@@ -46,27 +47,41 @@ class Employee {
 
 public class EmployeeDataGeneration {
     public static void main(String[] args) {
-        try {
-            // Task 1: Data Generation
-            List<Employee> employees = generateEmployeeData();
+        List<Employee> employees = new ArrayList<>();
+        String outputFilePath = "output.csv";
 
-            // Print the employee information before sorting
-            System.out.println("Employee Information (Before Sorting):");
-            for (Employee employee : employees) {
-                System.out.println(employee);
-            }
+        try (Scanner scanner = new Scanner(System.in)) {
+            int choice;
 
-            // Task 5: Bonus Challenge - Sort employees based on salary in ascending order
-            Collections.sort(employees, Comparator.comparingDouble(Employee::getSalary));
+            do {
+                displayMenu();
+                System.out.print("Enter your choice: ");
+                choice = scanner.nextInt();
 
-            // Task 2: CSV File Writing
-            String outputFilePath = "output.csv";
-            writeEmployeeDataToCSV(employees, outputFilePath);
+                switch (choice) {
+                    case 1:
+                        // Task 1: Data Generation
+                        employees = generateEmployeeData();
+                        break;
+                    case 2:
+                        // Task 5: Bonus Challenge - Sort employees based on salary in ascending order
+                        Collections.sort(employees, Comparator.comparingDouble(Employee::getSalary));
 
-            System.out.println("Employee data has been written to 'output.csv'.");
-
-            // Task 3: CSV File Verification
-            readAndVerifyCSVFile(outputFilePath);
+                        // Task 2: CSV File Writing
+                        writeEmployeeDataToCSV(employees, outputFilePath);
+                        System.out.println("Employee data has been written to 'output.csv'.");
+                        break;
+                    case 3:
+                        // Task 3: CSV File Verification
+                        readAndVerifyCSVFile(outputFilePath);
+                        break;
+                    case 4:
+                        System.out.println("Exiting the program.");
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } while (choice != 4);
         } catch (IOException e) {
             System.err.println("An error occurred while performing file I/O: " + e.getMessage());
         } catch (Exception e) {
@@ -109,6 +124,14 @@ public class EmployeeDataGeneration {
                 System.out.println(line);
             }
         }
+    }
+
+    public static void displayMenu() {
+        System.out.println("\nMenu:");
+        System.out.println("1. Generate new employee data");
+        System.out.println("2. Write data to file (and sort)");
+        System.out.println("3. Verify data from file");
+        System.out.println("4. Exit");
     }
 }
 
