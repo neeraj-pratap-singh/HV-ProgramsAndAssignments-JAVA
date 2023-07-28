@@ -12,5 +12,6 @@ public class MultiplicationTable {
             int result = num * i;
             System.out.println(num + " x " + i + " = " + result);
         }
+        scanner.close();
     }
 }
