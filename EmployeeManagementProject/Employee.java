@@ -929,8 +929,58 @@ public class Employee {
         }
     }
 
+    /**
+     * Removes an employee by index from the CSV file.
+     * @param fileName The name of the CSV file.
+     * @param scanner Scanner object to read user input.
+     */
     public static void removeEmployeeByIndex(String fileName, Scanner scanner) {
-        // Implementation for removing an employee by index
+        System.out.println("\n=== Remove Employee by Index ===");
+        // Display all employees first to show the available indices
+        displayAllEmployees(fileName);
+
+        System.out.print("Enter the index of the employee to remove: ");
+        int indexToRemove = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character after reading int
+
+        try {
+            // Open the CSV file for reading
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // Create a temporary list to hold all employee lines except the one to be removed
+            List<String> tempLines = new ArrayList<>();
+
+            // Read the header line and add it to the temporary list
+            String headerLine = reader.readLine();
+            tempLines.add(headerLine);
+
+            // Read and process each employee's details
+            String line;
+            int currentIndex = 0;
+            while ((line = reader.readLine()) != null) {
+                if (currentIndex != indexToRemove) {
+                    tempLines.add(line);
+                }
+                currentIndex++;
+            }
+
+            // Close the reader
+            reader.close();
+
+            // Write the updated employee list (without the removed employee) back to the CSV file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+            for (String tempLine : tempLines) {
+                writer.write(tempLine);
+                writer.newLine();
+            }
+            writer.close();
+
+            System.out.println("Employee at index " + indexToRemove + " has been removed.");
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading/writing the file: " + e.getMessage());
+        }
     }
 
     /**
