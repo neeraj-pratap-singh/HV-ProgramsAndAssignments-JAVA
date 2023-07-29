@@ -449,8 +449,51 @@ public class Employee {
         }
     }
 
+    /**
+     * Finds and displays the oldest employee from the CSV file.
+     * @param fileName The name of the CSV file.
+     */
     public static void findOldestEmployee(String fileName) {
-        // Implementation for finding the oldest employee
+        System.out.println("\n=== Find Oldest Employee ===");
+        try {
+            // Open the CSV file for reading
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // Read the header line and skip it (since we don't need it for finding the oldest employee)
+            String line = reader.readLine();
+
+            // Variables to store information about the oldest employee
+            String oldestEmployeeName = "";
+            int oldestEmployeeAge = Integer.MIN_VALUE; // Initialize to a large value
+
+            // Read and process each employee's details
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                String name = employeeData[0];
+                int age = Integer.parseInt(employeeData[1]);
+
+                // Check if the current employee is older than the previous oldest employee
+                if (age > oldestEmployeeAge) {
+                    oldestEmployeeName = name;
+                    oldestEmployeeAge = age;
+                }
+            }
+
+            // Close the reader
+            reader.close();
+
+            // Display the oldest employee's information
+            if (!oldestEmployeeName.isEmpty()) {
+                System.out.println("Oldest Employee Name: " + oldestEmployeeName);
+                System.out.println("Oldest Employee Age: " + oldestEmployeeAge);
+            } else {
+                System.out.println("No employees found in the database.");
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading the file: " + e.getMessage());
+        }
     }
 
     public static void findEmployeesWithinAgeRange(String fileName, Scanner scanner) {
