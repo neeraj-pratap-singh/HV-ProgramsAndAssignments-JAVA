@@ -1,6 +1,7 @@
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 
 public class fileWritingusingBuffer {
     public static void main(String[] args) {
@@ -18,11 +19,8 @@ public class fileWritingusingBuffer {
             bw.newLine();
             bw.write("Ish, 29, 50, 10");
             bw.close();
-        }
-
-        catch (Exception e) {
-            System.out.println(e);
-            // TODO: handle exception
+        } catch (IOException e) {
+            System.err.println("An error occurred while writing to the file: " + e.getMessage());
         }
     }
 }
