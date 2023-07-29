@@ -816,7 +816,23 @@ public class Employee {
         }
     }
 
+    /**
+     * Sorts and displays employees by salary from the CSV file.
+     * @param fileName The name of the CSV file.
+     */
     public static void sortEmployeesBySalary(String fileName) {
-        // Implementation for sorting employees by salary
+        System.out.println("\n=== Sort Employees by Salary ===");
+        List<Employee> employees = readEmployeesFromFile(fileName);
+
+        if (employees.isEmpty()) {
+            System.out.println("No employees found in the database.");
+            return;
+        }
+
+        // Sort employees based on salary in ascending order
+        Collections.sort(employees, Comparator.comparingDouble(Employee::getSalary));
+
+        // Display employees in sorted order
+        displayEmployeesTable(employees);
     }
 }
