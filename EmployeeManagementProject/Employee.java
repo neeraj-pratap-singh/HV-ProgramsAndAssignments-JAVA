@@ -578,8 +578,47 @@ public class Employee {
         }
     }
 
+    /**
+     * Calculates and displays the average age of employees from the CSV file.
+     * @param fileName The name of the CSV file.
+     */
     public static void calculateAverageAge(String fileName) {
-        // Implementation for calculating the average age of employees
+        System.out.println("\n=== Calculate Average Age of Employees ===");
+        int totalAge = 0;
+        int totalEmployees = 0;
+
+        try {
+            // Open the CSV file for reading
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // Skip the header line
+            String line = reader.readLine();
+
+            // Read and sum up the age of each employee
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                int age = Integer.parseInt(employeeData[1]);
+                totalAge += age;
+                totalEmployees++;
+            }
+
+            // Close the reader
+            reader.close();
+
+            if (totalEmployees == 0) {
+                System.out.println("No employees found in the database.");
+            } else {
+                // Calculate and display the average age
+                double averageAge = (double) totalAge / totalEmployees;
+                System.out.printf("Average Age of Employees: %.2f%n", averageAge);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading the file: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Error occurred while parsing age: " + e.getMessage());
+        }
     }
 
     public static void calculateAverageSalary(String fileName) {
