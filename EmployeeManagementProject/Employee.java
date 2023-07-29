@@ -621,8 +621,49 @@ public class Employee {
         }
     }
 
+    /**
+     * Calculates and displays the average salary of all employees from the CSV file.
+     * @param fileName The name of the CSV file.
+     */
     public static void calculateAverageSalary(String fileName) {
-        // Implementation for calculating the average salary of employees
+        System.out.println("\n=== Calculate Average Salary of Employees ===");
+        try {
+            // Open the CSV file for reading
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // Read the header line (and skip it) as we don't need it for the calculation
+            reader.readLine();
+
+            int totalEmployees = 0;
+            double totalSalary = 0.0;
+
+            // Read each employee's details and calculate total salary and count of employees
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                if (employeeData.length >= 3) {
+                    double salary = Double.parseDouble(employeeData[2]);
+                    totalSalary += salary;
+                    totalEmployees++;
+                }
+            }
+
+            // Close the reader
+            reader.close();
+
+            if (totalEmployees == 0) {
+                System.out.println("No employees found in the database.");
+            } else {
+                double averageSalary = totalSalary / totalEmployees;
+                System.out.printf("Average Salary of Employees: $%.2f%n", averageSalary);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading the file: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Error parsing salary data: " + e.getMessage());
+        }
     }
 
     public static void findEmployeesAboveSalaryThreshold(String fileName, Scanner scanner) {
