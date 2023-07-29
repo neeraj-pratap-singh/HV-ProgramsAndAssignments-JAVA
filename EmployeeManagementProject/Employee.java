@@ -304,12 +304,102 @@ public class Employee {
         return sb.toString();
     }
 
+    /**
+     * Finds and displays the employee with the highest salary from the CSV file.
+     * @param fileName The name of the CSV file.
+     */
     public static void findEmployeeWithHighestSalary(String fileName) {
-        // Implementation for finding employee with the highest salary
+        System.out.println("\n=== Find Employee with Highest Salary ===");
+        try {
+            // Open the CSV file for reading
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // Read the header line (to skip it)
+            reader.readLine();
+
+            // Initialize variables to store the highest salary and the employee with that salary
+            double highestSalary = Double.MIN_VALUE;
+            String employeeWithHighestSalary = "";
+
+            // Read and compare each employee's salary to find the highest salary
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                double salary = Double.parseDouble(employeeData[2]); // Salary is at index 2 in the CSV file
+                if (salary > highestSalary) {
+                    highestSalary = salary;
+                    employeeWithHighestSalary = employeeData[0]; // Employee name is at index 0 in the CSV file
+                }
+            }
+
+            // Close the reader
+            reader.close();
+
+            if (employeeWithHighestSalary.isEmpty()) {
+                System.out.println("No employees found in the database.");
+            } else {
+                // Display the employee with the highest salary
+                System.out.println("Employee with Highest Salary:");
+                System.out.println("Name: " + employeeWithHighestSalary);
+                System.out.println("Salary: " + highestSalary);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading the file: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Error parsing salary data: " + e.getMessage());
+        }
     }
 
+    /**
+     * Finds and displays the employee with the lowest salary from the CSV file.
+     * @param fileName The name of the CSV file.
+     */
     public static void findEmployeeWithLowestSalary(String fileName) {
-        // Implementation for finding employee with the lowest salary
+        System.out.println("\n=== Find Employee with Lowest Salary ===");
+        try {
+            // Open the CSV file for reading
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // Read the header line and skip it
+            String line = reader.readLine();
+
+            // Initialize variables to track the employee with the lowest salary
+            String lowestSalaryEmployeeName = null;
+            double lowestSalary = Double.MAX_VALUE;
+
+            // Read and process each employee's details
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                String name = employeeData[0];
+                double salary = Double.parseDouble(employeeData[2]);
+
+                // Check if the current employee has the lowest salary so far
+                if (salary < lowestSalary) {
+                    lowestSalary = salary;
+                    lowestSalaryEmployeeName = name;
+                }
+            }
+
+            // Close the reader
+            reader.close();
+
+            // Display the employee with the lowest salary
+            if (lowestSalaryEmployeeName != null) {
+                System.out.println("Employee with Lowest Salary:");
+                System.out.println("Name: " + lowestSalaryEmployeeName);
+                System.out.println("Salary: " + lowestSalary);
+            } else {
+                System.out.println("No employees found in the database.");
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading the file: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Error occurred while parsing salary: " + e.getMessage());
+        }
     }
 
     public static void findYoungestEmployee(String fileName) {
