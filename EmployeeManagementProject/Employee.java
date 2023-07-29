@@ -496,12 +496,86 @@ public class Employee {
         }
     }
 
+    /**
+     * Finds and displays employees within a specific age range from the CSV file.
+     * @param fileName The name of the CSV file.
+     * @param scanner Scanner object to read user input.
+     */
     public static void findEmployeesWithinAgeRange(String fileName, Scanner scanner) {
-        // Implementation for finding employees within a specific age range
+        System.out.println("\n=== Find Employees Within Age Range ===");
+        try {
+            // Get the age range from the user
+            System.out.print("Enter the minimum age: ");
+            int minAge = scanner.nextInt();
+            System.out.print("Enter the maximum age: ");
+            int maxAge = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character after reading int
+
+            // Open the CSV file for reading
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // Read the header line and display it
+            String line = reader.readLine();
+            if (line == null) {
+                System.out.println("No employees found in the database.");
+                reader.close();
+                return;
+            }
+            System.out.println(formatTableRow(header.split(",")));
+
+            // Read and display employees within the specified age range
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                int age = Integer.parseInt(employeeData[1]);
+                if (age >= minAge && age <= maxAge) {
+                    System.out.println(formatTableRow(employeeData));
+                }
+            }
+
+            // Close the reader
+            reader.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading the file: " + e.getMessage());
+        }
     }
 
+    /**
+     * Calculates the total salary of all employees from the CSV file.
+     * @param fileName The name of the CSV file.
+     */
     public static void calculateTotalSalary(String fileName) {
-        // Implementation for calculating total salary of all employees
+        System.out.println("\n=== Calculate Total Salary of All Employees ===");
+        double totalSalary = 0.0;
+
+        try {
+            // Open the CSV file for reading
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // Read the header line (if exists) to skip it
+            String line = reader.readLine();
+
+            // Read and sum the salary of each employee
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                // Assuming the salary is the third attribute in the CSV file (index 2)
+                double salary = Double.parseDouble(employeeData[2]);
+                totalSalary += salary;
+            }
+
+            // Close the reader
+            reader.close();
+
+            // Display the total salary
+            System.out.println("Total Salary of All Employees: " + totalSalary);
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading the file: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid salary format in the CSV file.");
+        }
     }
 
     public static void calculateAverageAge(String fileName) {
