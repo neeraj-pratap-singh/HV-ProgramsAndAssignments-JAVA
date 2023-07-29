@@ -731,8 +731,89 @@ public class Employee {
         // Implementation for removing an employee by index
     }
 
+    /**
+     * Sorts and displays employees by age from the CSV file.
+     * @param fileName The name of the CSV file.
+     */
     public static void sortEmployeesByAge(String fileName) {
-        // Implementation for sorting employees by age
+        System.out.println("\n=== Sort Employees by Age ===");
+        List<Employee> employees = readEmployeesFromFile(fileName);
+
+        // Sort employees by age using a custom comparator
+        employees.sort(Comparator.comparingInt(Employee::getAge));
+
+        // Display sorted employees
+        displayEmployeesTable(employees);
+    }
+
+    /**
+     * Reads employee data from the CSV file and returns a list of Employee objects.
+     * @param fileName The name of the CSV file.
+     * @return A list of Employee objects.
+     */
+    private static List<Employee> readEmployeesFromFile(String fileName) {
+        List<Employee> employees = new ArrayList<>();
+
+        try {
+            // Open the CSV file for reading
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // Skip the header line
+            reader.readLine();
+
+            // Read and parse each employee's details
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                String name = employeeData[0];
+                int age = Integer.parseInt(employeeData[1]);
+                double salary = Double.parseDouble(employeeData[2]);
+                String designation = employeeData[3];
+                String gender = employeeData[4];
+                String contactInfo = employeeData[5];
+                String department = employeeData[6];
+                String dateOfJoining = employeeData[7];
+                int performanceRating = Integer.parseInt(employeeData[8]);
+
+                // Create an Employee object and add it to the list
+                Employee employee = new Employee(name, age, salary, designation, gender, contactInfo, department, dateOfJoining, performanceRating);
+                employees.add(employee);
+            }
+
+            // Close the reader
+            reader.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading the file: " + e.getMessage());
+        }
+
+        return employees;
+    }
+
+    /**
+     * Displays employees in a tabular manner.
+     * @param employees The list of Employee objects to be displayed.
+     */
+    private static void displayEmployeesTable(List<Employee> employees) {
+        // Display header
+        System.out.println(formatTableRow(header.split(",")));
+
+        // Display each employee's details
+        for (Employee employee : employees) {
+            String[] rowData = {
+                employee.getName(),
+                String.valueOf(employee.getAge()),
+                String.valueOf(employee.getSalary()),
+                employee.getDesignation(),
+                employee.getGender(),
+                employee.getContactInfo(),
+                employee.getDepartment(),
+                employee.getDateOfJoining(),
+                String.valueOf(employee.getPerformanceRating())
+            };
+            System.out.println(formatTableRow(rowData));
+        }
     }
 
     public static void sortEmployeesBySalary(String fileName) {
