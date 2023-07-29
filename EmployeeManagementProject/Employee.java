@@ -402,8 +402,51 @@ public class Employee {
         }
     }
 
+    /**
+     * Finds and displays the youngest employee from the CSV file.
+     * @param fileName The name of the CSV file.
+     */
     public static void findYoungestEmployee(String fileName) {
-        // Implementation for finding the youngest employee
+        System.out.println("\n=== Find Youngest Employee ===");
+        try {
+            // Open the CSV file for reading
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // Read the header line (discard it as we don't need it for this operation)
+            reader.readLine();
+
+            int youngestAge = Integer.MAX_VALUE;
+            String youngestEmployee = null;
+
+            // Read each employee's details and find the youngest employee
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                int age = Integer.parseInt(employeeData[1]);
+
+                if (age < youngestAge) {
+                    youngestAge = age;
+                    youngestEmployee = employeeData[0];
+                }
+            }
+
+            // Close the reader
+            reader.close();
+
+            if (youngestEmployee != null) {
+                System.out.println("Youngest Employee: " + youngestEmployee);
+                System.out.println("Age: " + youngestAge);
+            } else {
+                System.out.println("No employees found in the database.");
+            }
+
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading the file: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Error parsing employee age: " + e.getMessage());
+        }
     }
 
     public static void findOldestEmployee(String fileName) {
