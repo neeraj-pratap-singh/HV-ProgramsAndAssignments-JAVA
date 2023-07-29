@@ -666,8 +666,53 @@ public class Employee {
         }
     }
 
+    /**
+     * Finds and displays employees with salaries above a specified threshold from the CSV file.
+     * @param fileName The name of the CSV file.
+     * @param scanner Scanner object to read user input.
+     */
     public static void findEmployeesAboveSalaryThreshold(String fileName, Scanner scanner) {
-        // Implementation for finding employees above a certain salary threshold
+        System.out.println("\n=== Find Employees Above Salary Threshold ===");
+        System.out.print("Enter the salary threshold: ");
+        double threshold = scanner.nextDouble();
+        scanner.nextLine(); // Consume the newline character after reading double
+
+        try {
+            // Open the CSV file for reading
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // Read the header line (ignore it for this operation)
+            reader.readLine();
+
+            // Keep track of whether any employees above the threshold were found
+            boolean employeesFound = false;
+
+            // Read and display employees with salaries above the threshold
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                double salary = Double.parseDouble(employeeData[2]);
+                if (salary > threshold) {
+                    // Print the header only once if there are employees above the threshold
+                    if (!employeesFound) {
+                        System.out.println(formatTableRow(header.split(",")));
+                        employeesFound = true;
+                    }
+                    System.out.println(formatTableRow(employeeData));
+                }
+            }
+
+            // Close the reader
+            reader.close();
+
+            if (!employeesFound) {
+                System.out.println("No employees found with salaries above the threshold.");
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading the file: " + e.getMessage());
+        }
     }
 
     public static void updateEmployeeAge(String fileName, Scanner scanner) {
