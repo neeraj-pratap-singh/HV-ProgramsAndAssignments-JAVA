@@ -867,8 +867,66 @@ public class Employee {
         }
     }
 
+    /**
+     * Removes an employee by name from the CSV file.
+     * @param fileName The name of the CSV file.
+     * @param scanner Scanner object to read user input.
+     */
     public static void removeEmployeeByName(String fileName, Scanner scanner) {
-        // Implementation for removing an employee by name
+        System.out.println("\n=== Remove Employee by Name ===");
+        System.out.print("Enter the name of the employee to remove: ");
+        String nameToRemove = scanner.nextLine();
+
+        try {
+            // Open the CSV file for reading
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            List<String> lines = new ArrayList<>();
+
+            // Read the header line and add it to the list of lines
+            String headerLine = reader.readLine();
+            if (headerLine == null) {
+                System.out.println("No employees found in the database.");
+                reader.close();
+                return;
+            }
+            lines.add(headerLine);
+
+            // Read each line and check if the name matches the name to remove
+            String line;
+            boolean employeeRemoved = false;
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                String employeeName = employeeData[0].trim();
+
+                // If the employee name matches the name to remove, skip adding this line to the list
+                if (!employeeName.equalsIgnoreCase(nameToRemove)) {
+                    lines.add(line);
+                } else {
+                    employeeRemoved = true;
+                }
+            }
+
+            // Close the reader
+            reader.close();
+
+            // Write the updated data back to the CSV file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+            for (String updatedLine : lines) {
+                writer.write(updatedLine);
+                writer.newLine();
+            }
+            writer.close();
+
+            if (employeeRemoved) {
+                System.out.println("Employee '" + nameToRemove + "' removed successfully.");
+            } else {
+                System.out.println("Employee '" + nameToRemove + "' not found in the database.");
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading/writing the file: " + e.getMessage());
+        }
     }
 
     public static void removeEmployeeByIndex(String fileName, Scanner scanner) {
