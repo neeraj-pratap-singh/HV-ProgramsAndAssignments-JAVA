@@ -801,8 +801,70 @@ public class Employee {
         }
     }
 
+    /**
+     * Updates the name of an employee in the CSV file.
+     * @param fileName The name of the CSV file.
+     * @param scanner Scanner object to read user input.
+     */
     public static void updateEmployeeName(String fileName, Scanner scanner) {
-        // Implementation for updating employee name
+        System.out.println("\n=== Update Employee Name ===");
+        // Prompt the user for the employee's current name and new name
+        System.out.print("Enter the current name of the employee: ");
+        String currentName = scanner.nextLine();
+        System.out.print("Enter the new name of the employee: ");
+        String newName = scanner.nextLine();
+
+        try {
+            // Open the CSV file for reading and writing
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName + ".tmp", true));
+
+            // Read the header line and write it to the temporary file
+            String line = reader.readLine();
+            writer.write(line);
+            writer.newLine();
+
+            boolean employeeFound = false;
+            // Read and update each employee's details
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                String name = employeeData[0];
+
+                // Check if the current line contains the employee to be updated
+                if (name.equalsIgnoreCase(currentName)) {
+                    // Update the name to the new name
+                    employeeData[0] = newName;
+                    employeeFound = true;
+                }
+
+                // Write the updated or unmodified employee details to the temporary file
+                writer.write(String.join(",", employeeData));
+                writer.newLine();
+            }
+
+            // Close the reader and writer
+            reader.close();
+            writer.close();
+
+            // Rename the temporary file to the original file
+            File oldFile = new File(fileName);
+            File newFile = new File(fileName + ".tmp");
+            if (oldFile.delete()) {
+                newFile.renameTo(new File(fileName));
+            } else {
+                throw new IOException("Failed to update employee name.");
+            }
+
+            if (employeeFound) {
+                System.out.println("Employee name updated successfully.");
+            } else {
+                System.out.println("Employee not found with the given name.");
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while updating the employee name: " + e.getMessage());
+        }
     }
 
     public static void removeEmployeeByName(String fileName, Scanner scanner) {
