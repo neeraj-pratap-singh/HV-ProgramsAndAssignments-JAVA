@@ -715,8 +715,90 @@ public class Employee {
         }
     }
 
+    /**
+     * Updates the age of an employee in the CSV file.
+     * @param fileName The name of the CSV file.
+     * @param scanner Scanner object to read user input.
+     */
     public static void updateEmployeeAge(String fileName, Scanner scanner) {
-        // Implementation for updating employee age
+        System.out.println("\n=== Update Employee Age ===");
+        // Display all employees before asking for input to show their current ages
+        displayAllEmployees(fileName);
+
+        System.out.print("Enter the name of the employee whose age you want to update: ");
+        String employeeName = scanner.nextLine();
+        System.out.print("Enter the new age for " + employeeName + ": ");
+        int newAge = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character after reading int
+
+        // Read all employees from the CSV file into a list for updating
+        List<Employee> employees = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            // Skip the header line
+            reader.readLine();
+
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                Employee employee = new Employee(
+                    employeeData[0],
+                    Integer.parseInt(employeeData[1]),
+                    Double.parseDouble(employeeData[2]),
+                    employeeData[3],
+                    employeeData[4],
+                    employeeData[5],
+                    employeeData[6],
+                    employeeData[7],
+                    Integer.parseInt(employeeData[8])
+                );
+                employees.add(employee);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+            return;
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading the file: " + e.getMessage());
+            return;
+        }
+
+        // Find the employee in the list by name and update the age
+        boolean employeeFound = false;
+        for (Employee employee : employees) {
+            if (employee.getName().equalsIgnoreCase(employeeName)) {
+                employee.setAge(newAge);
+                employeeFound = true;
+                break;
+            }
+        }
+
+        // If the employee was found and updated, rewrite the entire file with the updated data
+        if (employeeFound) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+                // Write the header
+                writer.write(header);
+                writer.newLine();
+
+                // Write each updated employee to the file
+                for (Employee employee : employees) {
+                    writer.write(employee.getName() + ","
+                            + employee.getAge() + ","
+                            + employee.getSalary() + ","
+                            + employee.getDesignation() + ","
+                            + employee.getGender() + ","
+                            + employee.getContactInfo() + ","
+                            + employee.getDepartment() + ","
+                            + employee.getDateOfJoining() + ","
+                            + employee.getPerformanceRating());
+                    writer.newLine();
+                }
+
+                System.out.println("Employee age updated successfully.");
+            } catch (IOException e) {
+                System.err.println("Error occurred while writing to the file: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Employee not found. Age not updated.");
+        }
     }
 
     public static void updateEmployeeName(String fileName, Scanner scanner) {
