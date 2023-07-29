@@ -28,8 +28,6 @@ public class Employee {
         this.performanceRating = performanceRating;
     }
 
-    // Getters and Setters
-
     public String getName() {
         return name;
     }
@@ -194,15 +192,7 @@ public class Employee {
         }
     }
 
-    // Function Implementations:
-
-    /**
-     * Adds a new employee to the CSV file.
-     * @param fileName The name of the CSV file.
-     * @param scanner Scanner object to read user input.
-     */
-
-     public static void addNewEmployee(String fileName, Scanner scanner) {
+    public static void addNewEmployee(String fileName, Scanner scanner) {
         System.out.println("\n=== Add New Employee ===");
         // Get employee details from the user
         System.out.print("Enter Employee Name: ");
@@ -256,58 +246,14 @@ public class Employee {
         }
     }
 
-    /**
-     * Displays all employees from the CSV file in a tabular manner.
-     * @param fileName The name of the CSV file.
-     */
     public static void displayAllEmployees(String fileName) {
         System.out.println("\n=== Display All Employees ===");
-        try {
-            // Open the CSV file for reading
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        List<Employee> employees = readEmployeesFromFile(fileName);
 
-            // Read the header line and display it
-            String line = reader.readLine();
-            if (line == null) {
-                System.out.println("No employees found in the database.");
-                reader.close();
-                return;
-            }
-            System.out.println(formatTableRow(header.split(",")));
-
-            // Read and display each employee's details
-            while ((line = reader.readLine()) != null) {
-                String[] employeeData = line.split(",");
-                System.out.println(formatTableRow(employeeData));
-            }
-
-            // Close the reader
-            reader.close();
-        } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + e.getMessage());
-        } catch (IOException e) {
-            System.err.println("Error occurred while reading the file: " + e.getMessage());
-        }
+        // Display employees
+        displayEmployeesTable(employees);
     }
 
-    /**
-     * Formats a table row using proper spacing for each attribute.
-     * @param rowData The array of strings representing the data for a row.
-     * @return The formatted table row as a single string.
-     */
-    private static String formatTableRow(String[] rowData) {
-        StringBuilder sb = new StringBuilder();
-        for (String data : rowData) {
-            // Align each column with a width of 20 characters
-            sb.append(String.format("%-20s", data));
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Finds and displays the employee with the highest salary from the CSV file.
-     * @param fileName The name of the CSV file.
-     */
     public static void findEmployeeWithHighestSalary(String fileName) {
         System.out.println("\n=== Find Employee with Highest Salary ===");
         try {
@@ -352,10 +298,6 @@ public class Employee {
         }
     }
 
-    /**
-     * Finds and displays the employee with the lowest salary from the CSV file.
-     * @param fileName The name of the CSV file.
-     */
     public static void findEmployeeWithLowestSalary(String fileName) {
         System.out.println("\n=== Find Employee with Lowest Salary ===");
         try {
@@ -402,10 +344,6 @@ public class Employee {
         }
     }
 
-    /**
-     * Finds and displays the youngest employee from the CSV file.
-     * @param fileName The name of the CSV file.
-     */
     public static void findYoungestEmployee(String fileName) {
         System.out.println("\n=== Find Youngest Employee ===");
         try {
@@ -449,10 +387,6 @@ public class Employee {
         }
     }
 
-    /**
-     * Finds and displays the oldest employee from the CSV file.
-     * @param fileName The name of the CSV file.
-     */
     public static void findOldestEmployee(String fileName) {
         System.out.println("\n=== Find Oldest Employee ===");
         try {
@@ -496,11 +430,6 @@ public class Employee {
         }
     }
 
-    /**
-     * Finds and displays employees within a specific age range from the CSV file.
-     * @param fileName The name of the CSV file.
-     * @param scanner Scanner object to read user input.
-     */
     public static void findEmployeesWithinAgeRange(String fileName, Scanner scanner) {
         System.out.println("\n=== Find Employees Within Age Range ===");
         try {
@@ -541,10 +470,6 @@ public class Employee {
         }
     }
 
-    /**
-     * Calculates the total salary of all employees from the CSV file.
-     * @param fileName The name of the CSV file.
-     */
     public static void calculateTotalSalary(String fileName) {
         System.out.println("\n=== Calculate Total Salary of All Employees ===");
         double totalSalary = 0.0;
@@ -578,10 +503,6 @@ public class Employee {
         }
     }
 
-    /**
-     * Calculates and displays the average age of employees from the CSV file.
-     * @param fileName The name of the CSV file.
-     */
     public static void calculateAverageAge(String fileName) {
         System.out.println("\n=== Calculate Average Age of Employees ===");
         int totalAge = 0;
@@ -621,10 +542,6 @@ public class Employee {
         }
     }
 
-    /**
-     * Calculates and displays the average salary of all employees from the CSV file.
-     * @param fileName The name of the CSV file.
-     */
     public static void calculateAverageSalary(String fileName) {
         System.out.println("\n=== Calculate Average Salary of Employees ===");
         try {
@@ -666,11 +583,6 @@ public class Employee {
         }
     }
 
-    /**
-     * Finds and displays employees with salaries above a specified threshold from the CSV file.
-     * @param fileName The name of the CSV file.
-     * @param scanner Scanner object to read user input.
-     */
     public static void findEmployeesAboveSalaryThreshold(String fileName, Scanner scanner) {
         System.out.println("\n=== Find Employees Above Salary Threshold ===");
         System.out.print("Enter the salary threshold: ");
@@ -715,11 +627,6 @@ public class Employee {
         }
     }
 
-    /**
-     * Updates the age of an employee in the CSV file.
-     * @param fileName The name of the CSV file.
-     * @param scanner Scanner object to read user input.
-     */
     public static void updateEmployeeAge(String fileName, Scanner scanner) {
         System.out.println("\n=== Update Employee Age ===");
         // Display all employees before asking for input to show their current ages
@@ -801,11 +708,6 @@ public class Employee {
         }
     }
 
-    /**
-     * Updates the name of an employee in the CSV file.
-     * @param fileName The name of the CSV file.
-     * @param scanner Scanner object to read user input.
-     */
     public static void updateEmployeeName(String fileName, Scanner scanner) {
         System.out.println("\n=== Update Employee Name ===");
         // Prompt the user for the employee's current name and new name
@@ -867,11 +769,6 @@ public class Employee {
         }
     }
 
-    /**
-     * Removes an employee by name from the CSV file.
-     * @param fileName The name of the CSV file.
-     * @param scanner Scanner object to read user input.
-     */
     public static void removeEmployeeByName(String fileName, Scanner scanner) {
         System.out.println("\n=== Remove Employee by Name ===");
         System.out.print("Enter the name of the employee to remove: ");
@@ -929,11 +826,6 @@ public class Employee {
         }
     }
 
-    /**
-     * Removes an employee by index from the CSV file.
-     * @param fileName The name of the CSV file.
-     * @param scanner Scanner object to read user input.
-     */
     public static void removeEmployeeByIndex(String fileName, Scanner scanner) {
         System.out.println("\n=== Remove Employee by Index ===");
         // Display all employees first to show the available indices
@@ -983,10 +875,6 @@ public class Employee {
         }
     }
 
-    /**
-     * Sorts and displays employees by age from the CSV file.
-     * @param fileName The name of the CSV file.
-     */
     public static void sortEmployeesByAge(String fileName) {
         System.out.println("\n=== Sort Employees by Age ===");
         List<Employee> employees = readEmployeesFromFile(fileName);
@@ -998,11 +886,31 @@ public class Employee {
         displayEmployeesTable(employees);
     }
 
-    /**
-     * Reads employee data from the CSV file and returns a list of Employee objects.
-     * @param fileName The name of the CSV file.
-     * @return A list of Employee objects.
-     */
+    public static void sortEmployeesBySalary(String fileName) {
+        System.out.println("\n=== Sort Employees by Salary ===");
+        List<Employee> employees = readEmployeesFromFile(fileName);
+
+        if (employees.isEmpty()) {
+            System.out.println("No employees found in the database.");
+            return;
+        }
+
+        // Sort employees based on salary in ascending order
+        Collections.sort(employees, Comparator.comparingDouble(Employee::getSalary));
+
+        // Display employees in sorted order
+        displayEmployeesTable(employees);
+    }
+
+    private static String formatTableRow(String[] rowData) {
+        StringBuilder sb = new StringBuilder();
+        for (String data : rowData) {
+            // Align each column with a width of 20 characters
+            sb.append(String.format("%-20s", data));
+        }
+        return sb.toString();
+    }
+
     private static List<Employee> readEmployeesFromFile(String fileName) {
         List<Employee> employees = new ArrayList<>();
 
@@ -1043,10 +951,6 @@ public class Employee {
         return employees;
     }
 
-    /**
-     * Displays employees in a tabular manner.
-     * @param employees The list of Employee objects to be displayed.
-     */
     private static void displayEmployeesTable(List<Employee> employees) {
         // Display header
         System.out.println(formatTableRow(header.split(",")));
@@ -1066,25 +970,5 @@ public class Employee {
             };
             System.out.println(formatTableRow(rowData));
         }
-    }
-
-    /**
-     * Sorts and displays employees by salary from the CSV file.
-     * @param fileName The name of the CSV file.
-     */
-    public static void sortEmployeesBySalary(String fileName) {
-        System.out.println("\n=== Sort Employees by Salary ===");
-        List<Employee> employees = readEmployeesFromFile(fileName);
-
-        if (employees.isEmpty()) {
-            System.out.println("No employees found in the database.");
-            return;
-        }
-
-        // Sort employees based on salary in ascending order
-        Collections.sort(employees, Comparator.comparingDouble(Employee::getSalary));
-
-        // Display employees in sorted order
-        displayEmployeesTable(employees);
     }
 }
