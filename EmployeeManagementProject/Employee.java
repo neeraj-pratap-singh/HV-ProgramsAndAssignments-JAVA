@@ -124,7 +124,8 @@ public class Employee {
             System.out.println("15. Remove employee by index");
             System.out.println("16. Sort employees by age");
             System.out.println("17. Sort employees by salary");
-            System.out.println("18. Exit");
+            System.out.println("18. Search employees by name");
+            System.out.println("19. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -183,6 +184,9 @@ public class Employee {
                     sortEmployeesBySalary(fileName);
                     break;
                 case 18:
+                    searchEmployeesByName(fileName);
+                    break;
+                case 19:
                     exit = true;
                     break;
                 default:
@@ -900,6 +904,49 @@ public class Employee {
 
         // Display employees in sorted order
         displayEmployeesTable(employees);
+    }
+
+    public static void searchEmployeesByName(String fileName, Scanner scanner) {
+        System.out.println("\n=== Search Employees by Name ===");
+        System.out.print("Enter the name to search for: ");
+        String searchName = scanner.nextLine();
+
+        List<String[]> searchResults = new ArrayList<>();
+
+        try {
+            // Open the CSV file for reading
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // Read the header line (and skip it)
+            reader.readLine();
+
+            // Read and find matching employees by name
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] employeeData = line.split(",");
+                if (employeeData[0].equalsIgnoreCase(searchName)) {
+                    searchResults.add(employeeData);
+                }
+            }
+
+            // Close the reader
+            reader.close();
+
+            // Display search results
+            if (searchResults.isEmpty()) {
+                System.out.println("No matching employees found.");
+            } else {
+                // Display the header first
+                System.out.println(formatTableRow(header.split(",")));
+                for (String[] employeeData : searchResults) {
+                    System.out.println(formatTableRow(employeeData));
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading the file: " + e.getMessage());
+        }
     }
 
     private static String formatTableRow(String[] rowData) {
