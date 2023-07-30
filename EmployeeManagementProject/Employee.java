@@ -1,4 +1,7 @@
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 public class Employee {
@@ -184,7 +187,7 @@ public class Employee {
                     sortEmployeesBySalary(fileName);
                     break;
                 case 18:
-                    searchEmployeesByName(fileName);
+                    searchEmployeesByName(fileName, scanner);
                     break;
                 case 19:
                     exit = true;
@@ -198,41 +201,116 @@ public class Employee {
 
     public static void addNewEmployee(String fileName, Scanner scanner) {
         System.out.println("\n=== Add New Employee ===");
-        // Get employee details from the user
-        System.out.print("Enter Employee Name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter Employee Age: ");
-        int age = scanner.nextInt();
-        System.out.print("Enter Employee Salary: ");
-        double salary = scanner.nextDouble();
-        scanner.nextLine(); // Consume the newline character after reading double
-        System.out.print("Enter Employee Designation: ");
-        String designation = scanner.nextLine();
-        System.out.print("Enter Employee Gender: ");
-        String gender = scanner.nextLine();
-        System.out.print("Enter Employee Contact Information: ");
-        String contactInfo = scanner.nextLine();
-        System.out.print("Enter Employee Department: ");
-        String department = scanner.nextLine();
-        System.out.print("Enter Employee Date of Joining: ");
-        String dateOfJoining = scanner.nextLine();
-        System.out.print("Enter Employee Performance Rating: ");
-        int performanceRating = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character after reading int
-
-        // Create an Employee object with the collected details
-        Employee newEmployee = new Employee(name, age, salary, designation, gender, contactInfo, department, dateOfJoining, performanceRating);
 
         try {
             // Open the CSV file for writing
             BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
-            
             // Check if the file is empty, and if so, write the header first
             File file = new File(fileName);
             if (file.length() == 0) {
                 writer.write(header);
                 writer.newLine();
             }
+
+            // Get employee details from the user
+            System.out.print("Enter Employee Name: ");
+            String name = scanner.nextLine();
+
+            int age;
+            while (true) {
+                try {
+                    System.out.print("Enter Employee Age: ");
+                    age = scanner.nextInt();
+                    if (age < 14) {
+                        throw new IllegalArgumentException("Age should be equal or greater than 14.");
+                    }
+                    break; // If the age is valid, break the loop
+                } catch (IllegalArgumentException e) {
+                    System.err.println(e.getMessage() + " Please try again.");
+                }
+            }
+
+            double salary;
+            while (true) {
+                try {
+                    System.out.print("Enter Employee Salary: ");
+                    salary = scanner.nextDouble();
+                    if (salary < 0) {
+                        throw new IllegalArgumentException("Salary should be a positive number.");
+                    }
+                    break; // If the salary is valid, break the loop
+                } catch (IllegalArgumentException e) {
+                    System.err.println(e.getMessage() + " Please try again.");
+                }
+            }
+            scanner.nextLine(); // Consume the newline character after reading double
+
+            System.out.print("Enter Employee Designation: ");
+            String designation = scanner.nextLine();
+
+            String gender;
+            while (true) {
+                try {
+                    System.out.print("Enter Employee Gender (Male, Female, Others): ");
+                    gender = scanner.nextLine();
+                    if (!gender.equalsIgnoreCase("Male") && !gender.equalsIgnoreCase("Female") && !gender.equalsIgnoreCase("Others")) {
+                        throw new IllegalArgumentException("Invalid gender entered. Please select from Male, Female, or Others.");
+                    }
+                    break; // If the gender is valid, break the loop
+                } catch (IllegalArgumentException e) {
+                    System.err.println(e.getMessage() + " Please try again.");
+                }
+            }
+
+            String contactInfo;
+            while (true) {
+                try {
+                    System.out.print("Enter Employee Contact Information (10 digit mobile number): ");
+                    contactInfo = scanner.nextLine();
+                    if (!contactInfo.matches("\\d{10}")) {
+                        throw new IllegalArgumentException("Invalid contact information entered. Please enter a 10 digit mobile number.");
+                    }
+                    break; // If the contact info is valid, break the loop
+                } catch (IllegalArgumentException e) {
+                    System.err.println(e.getMessage() + " Please try again.");
+                }
+            }
+
+            System.out.print("Enter Employee Department: ");
+            String department = scanner.nextLine();
+
+            String dateOfJoining;
+            while (true) {
+                try {
+                    System.out.print("Enter Employee Date of Joining (yyyy-MM-dd): ");
+                    dateOfJoining = scanner.nextLine();
+                    LocalDate joiningDate = LocalDate.parse(dateOfJoining, DateTimeFormatter.ISO_LOCAL_DATE);
+                    if (joiningDate.isAfter(LocalDate.now())) {
+                        throw new IllegalArgumentException("Date of joining cannot be a future date.");
+                    }
+                    break; // If the date of joining is valid, break the loop
+                } catch (DateTimeParseException e) {
+                    System.err.println("Invalid date format. Please enter the date in yyyy-MM-dd format. Please try again.");
+                } catch (IllegalArgumentException e) {
+                    System.err.println(e.getMessage() + " Please try again.");
+                }
+            }
+
+            int performanceRating;
+            while (true) {
+                try {
+                    System.out.print("Enter Employee Performance Rating: ");
+                    performanceRating = scanner.nextInt();
+                    // Here, you might want to add validation for performance rating as well
+                    break; // If the performance rating is valid, break the loop
+                } catch (IllegalArgumentException e) {
+                    System.err.println(e.getMessage() + " Please try again.");
+                }
+            }
+            scanner.nextLine(); // Consume the newline character after reading int
+
+            // Create an Employee object with the collected details
+            Employee newEmployee = new Employee(name, age, salary, designation, gender, contactInfo, department, dateOfJoining, performanceRating);
 
             // Write the employee details to the CSV file
             writer.write(newEmployee.getName() + "," + newEmployee.getAge() + "," + newEmployee.getSalary() + ","
