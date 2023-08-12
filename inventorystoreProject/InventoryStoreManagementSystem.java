@@ -20,6 +20,10 @@ class Product {
     }
 
     public void sell(int quantitySold) {
+        if (this.quantity < quantitySold) {
+            System.out.println("Insufficient quantity. Cannot sell the requested amount.");
+            return;
+        }
         this.quantity -= quantitySold;
     }
 
@@ -98,6 +102,40 @@ class InventoryManagement {
         this.inventory = new ArrayList<>();
     }
 
+    public double getValidDoubleInput(String prompt) {
+        Scanner scanner = new Scanner(System.in);
+        double value;
+        while (true) {
+            System.out.print(prompt);
+            if (scanner.hasNextDouble()) {
+                value = scanner.nextDouble();
+                if (value > 0) return value;
+            }
+            scanner.nextLine(); // Clear invalid input
+            System.out.println("Invalid input. Please enter a positive number.");
+        }
+    }
+
+    public int getValidIntInput(String prompt) {
+        Scanner scanner = new Scanner(System.in);
+        int value;
+        while (true) {
+            System.out.print(prompt);
+            if (scanner.hasNextInt()) {
+                value = scanner.nextInt();
+                if (value > 0) return value;
+            }
+            scanner.nextLine(); // Clear invalid input
+            System.out.println("Invalid input. Please enter a positive integer.");
+        }
+    }
+
+    public String getStringInput(String prompt) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print(prompt);
+        return scanner.nextLine(); // Read the entire line, including whitespace
+    }
+
     public void addProduct(Product product) {
         inventory.add(product);
     }
@@ -170,40 +208,28 @@ public class InventoryStoreManagementSystem {
             int option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    System.out.print("Enter name: ");
-                    String elecName = scanner.next();
-                    System.out.print("Enter price: ");
-                    double elecPrice = scanner.nextDouble();
-                    System.out.print("Enter quantity: ");
-                    int elecQuantity = scanner.nextInt();
-                    System.out.print("Enter brand: ");
-                    String brand = scanner.next();
+                    String elecName = inventoryManagement.getStringInput("Enter name: ");
+                    double elecPrice = inventoryManagement.getValidDoubleInput("Enter price: Rs.");
+                    int elecQuantity = inventoryManagement.getValidIntInput("Enter quantity: ");
+                    String brand = inventoryManagement.getStringInput("Enter brand: ");
                     Product elecProduct = new Electronics(elecName, elecPrice, elecQuantity, brand);
                     inventoryManagement.addProduct(elecProduct);
                     System.out.println("Electronics product added successfully!");
                     break;
                 case 2:
-                    System.out.print("Enter name: ");
-                    String clothName = scanner.next();
-                    System.out.print("Enter price: ");
-                    double clothPrice = scanner.nextDouble();
-                    System.out.print("Enter quantity: ");
-                    int clothQuantity = scanner.nextInt();
-                    System.out.print("Enter size: ");
-                    String size = scanner.next();
+                    String clothName = inventoryManagement.getStringInput("Enter name: ");
+                    double clothPrice = inventoryManagement.getValidDoubleInput("Enter price: Rs.");
+                    int clothQuantity = inventoryManagement.getValidIntInput("Enter quantity: ");
+                    String size = inventoryManagement.getStringInput("Enter size: ");
                     Product clothProduct = new Clothing(clothName, clothPrice, clothQuantity, size);
                     inventoryManagement.addProduct(clothProduct);
                     System.out.println("Clothing product added successfully!");
                     break;
                 case 3:
-                    System.out.print("Enter name: ");
-                    String bookName = scanner.next();
-                    System.out.print("Enter price: ");
-                    double bookPrice = scanner.nextDouble();
-                    System.out.print("Enter quantity: ");
-                    int bookQuantity = scanner.nextInt();
-                    System.out.print("Enter author name: ");
-                    String author = scanner.next();
+                    String bookName = inventoryManagement.getStringInput("Enter name: ");
+                    double bookPrice = inventoryManagement.getValidDoubleInput("Enter price: Rs.");
+                    int bookQuantity = inventoryManagement.getValidIntInput("Enter quantity: ");
+                    String author = inventoryManagement.getStringInput("Enter author name: ");
                     Product bookProduct = new Books(bookName, bookPrice, bookQuantity, author);
                     inventoryManagement.addProduct(bookProduct);
                     System.out.println("Book product added successfully!");
