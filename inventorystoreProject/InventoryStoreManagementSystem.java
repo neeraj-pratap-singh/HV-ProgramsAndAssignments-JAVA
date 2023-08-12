@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 
 class Product {
     String name;
@@ -102,6 +103,67 @@ class InventoryManagement {
         this.inventory = new ArrayList<>();
     }
 
+    public void loadInventory(String filename) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                String type = parts[0];
+                String name = parts[1];
+                double price = Double.parseDouble(parts[2]);
+                int quantity = Integer.parseInt(parts[3]);
+
+                switch (type) {
+                    case "Electronics":
+                        String brand = parts[4];
+                        inventory.add(new Electronics(name, price, quantity, brand));
+                        break;
+                    case "Clothing":
+                        String size = parts[4];
+                        inventory.add(new Clothing(name, price, quantity, size));
+                        break;
+                    case "Books":
+                        String author = parts[4];
+                        inventory.add(new Books(name, price, quantity, author));
+                        break;
+                }
+            }
+            System.out.println("Inventory loaded successfully!");
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found! Starting with an empty inventory.");
+        } catch (IOException e) {
+            System.out.println("Error reading file! Starting with an empty inventory.");
+            e.printStackTrace();
+        }
+    }
+
+    public void saveInventory(String filename) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
+            for (Product product : inventory) {
+                String type = "";
+                String extraField = "";
+
+                if (product instanceof Electronics) {
+                    type = "Electronics";
+                    extraField = ((Electronics) product).brand;
+                } else if (product instanceof Clothing) {
+                    type = "Clothing";
+                    extraField = ((Clothing) product).size;
+                } else if (product instanceof Books) {
+                    type = "Books";
+                    extraField = ((Books) product).author;
+                }
+
+                writer.println(type + "," + product.name + "," + product.price + "," + product.quantity + "," + extraField);
+            }
+            System.out.println("Inventory saved successfully!");
+        } catch (IOException e) {
+            System.out.println("Error saving inventory!");
+            e.printStackTrace();
+        }
+    }
+
+
     public double getValidDoubleInput(String prompt) {
         Scanner scanner = new Scanner(System.in);
         double value;
@@ -189,8 +251,11 @@ class InventoryManagement {
 
 public class InventoryStoreManagementSystem {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        String filename = "./inventorystoreProject/inventory.csv";
         InventoryManagement inventoryManagement = new InventoryManagement();
+
+        // Load inventory from CSV file
+        inventoryManagement.loadInventory(filename);
 
         while (true) {
             System.out.println("\n***** Inventory Store Management System *****\n");
@@ -204,8 +269,7 @@ public class InventoryStoreManagementSystem {
             System.out.println("8. Compare two products");
             System.out.println("9. Calculate total inventory value");
             System.out.println("10. Exit");
-            System.out.print("Select an option: ");
-            int option = scanner.nextInt();
+            int option = inventoryManagement.getValidIntInput("Select an option: ");
             switch (option) {
                 case 1:
                     String elecName = inventoryManagement.getStringInput("Enter name: ");
@@ -215,6 +279,7 @@ public class InventoryStoreManagementSystem {
                     Product elecProduct = new Electronics(elecName, elecPrice, elecQuantity, brand);
                     inventoryManagement.addProduct(elecProduct);
                     System.out.println("Electronics product added successfully!");
+                    inventoryManagement.saveInventory(filename); // Save immediately
                     break;
                 case 2:
                     String clothName = inventoryManagement.getStringInput("Enter name: ");
@@ -224,6 +289,7 @@ public class InventoryStoreManagementSystem {
                     Product clothProduct = new Clothing(clothName, clothPrice, clothQuantity, size);
                     inventoryManagement.addProduct(clothProduct);
                     System.out.println("Clothing product added successfully!");
+                    inventoryManagement.saveInventory(filename); // Save immediately
                     break;
                 case 3:
                     String bookName = inventoryManagement.getStringInput("Enter name: ");
@@ -233,34 +299,30 @@ public class InventoryStoreManagementSystem {
                     Product bookProduct = new Books(bookName, bookPrice, bookQuantity, author);
                     inventoryManagement.addProduct(bookProduct);
                     System.out.println("Book product added successfully!");
+                    inventoryManagement.saveInventory(filename); // Save immediately
                     break;
                 case 4:
                     inventoryManagement.displayInventory();
                     break;
                 case 5:
-                    System.out.print("Enter product name to sell: ");
-                    String productNameToSell = scanner.next();
-                    System.out.print("Enter quantity to sell: ");
-                    int quantityToSell = scanner.nextInt();
+                    String productNameToSell = inventoryManagement.getStringInput("Enter product name to sell: ");
+                    int quantityToSell = inventoryManagement.getValidIntInput("Enter quantity to sell: ");
                     inventoryManagement.sellProduct(productNameToSell, quantityToSell);
+                    inventoryManagement.saveInventory(filename); // Save immediately
                     break;
                 case 6:
-                    System.out.print("Enter product name to search: ");
-                    String searchName = scanner.next();
+                    String searchName = inventoryManagement.getStringInput("Enter product name to search: ");
                     inventoryManagement.searchByName(searchName);
                     break;
                 case 7:
-                    System.out.print("Enter product name to apply discount: ");
-                    String discountName = scanner.next();
-                    System.out.print("Enter discount percentage: ");
-                    double discountPercentage = scanner.nextDouble();
+                    String discountName = inventoryManagement.getStringInput("Enter product name to apply discount: ");
+                    double discountPercentage = inventoryManagement.getValidDoubleInput("Enter discount percentage: ");
                     inventoryManagement.applyDiscount(discountName, discountPercentage);
+                    inventoryManagement.saveInventory(filename); // Save immediately
                     break;
                 case 8:
-                    System.out.print("Enter first product name to compare: ");
-                    String name1 = scanner.next();
-                    System.out.print("Enter second product name to compare: ");
-                    String name2 = scanner.next();
+                    String name1 = inventoryManagement.getStringInput("Enter first product name to compare: ");
+                    String name2 = inventoryManagement.getStringInput("Enter second product name to compare: ");
                     Product p1 = null, p2 = null;
                     for (Product product : inventoryManagement.inventory) {
                         if (product.name.equalsIgnoreCase(name1)) p1 = product;
