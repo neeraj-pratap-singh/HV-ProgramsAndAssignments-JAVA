@@ -46,7 +46,7 @@ class MenuItem {
 class Dish extends MenuItem {
     private String cuisineType;
 
-    public Dish(String name, double price, String cuisineType) { // Ci=onstructor name should be same as class name
+    public Dish(String name, double price, String cuisineType) { // Constructor name should be same as class name
         super(name, price); // call the baseclass constructor using super
         this.cuisineType = cuisineType; // to assign data to same class use this operator
     }
@@ -57,8 +57,8 @@ class Dish extends MenuItem {
 
     @Override
     public void display() {
-        super.display(); // Calling superclass display method
-        System.out.println("Cuisine Type: " + cuisineType); // Customizing the display for Dish class
+        // super.display(); // Calling superclass display method
+        System.out.println("Item: " + super.getName() + " | Price: Rs." + super.getPrice() + "|" + "Cuisine Type: " + cuisineType); // Customizing the display for Dish class
     }
 
 }
