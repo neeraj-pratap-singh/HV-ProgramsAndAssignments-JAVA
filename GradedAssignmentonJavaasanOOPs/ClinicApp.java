@@ -2,6 +2,17 @@ package GradedAssignmentonJavaasanOOPs;
 
 import java.util.*;
 
+class TimeSlots {
+    public static final List<String> slots;
+
+    static {
+        slots = new ArrayList<>();
+        for (int i = 9; i < 17; i++) {
+            slots.add(String.format("%02d:00 - %02d:00", i, i + 1));
+        }
+    }
+}
+
 class Visitor {
     private String name;
     private int age;
@@ -90,6 +101,11 @@ class Clinic {
     }
 
     public List<Visitor> getVisitors() { return visitors; }
+
+    public boolean isTimeSlotAvailable(String date, String time) {
+        List<String> times = appointments.get(date);
+        return times == null || !times.contains(time);
+    }
 }
 
 public class ClinicApp {
@@ -98,9 +114,7 @@ public class ClinicApp {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.println("----------------------------------------------------------------------------------------------------------");
             System.out.println("Welcome to the Small Clinic Appointment Management System");
-            System.out.println("----------------------------------------------------------------------------------------------------------");
             System.out.println("1. View Visitors List");
             System.out.println("2. Add New Visitor");
             System.out.println("3. Edit Visitor Details");
@@ -108,71 +122,211 @@ public class ClinicApp {
             System.out.println("5. Book an Appointment");
             System.out.println("6. Edit/Cancel Appointment");
             System.out.println("7. Exit");
-            System.out.println("----------------------------------------------------------------------------------------------------------");
             System.out.print("Please enter your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // consume newline character
+            int choice = validateInput(scanner, 1, 7);
 
             switch (choice) {
                 case 1:
                     clinic.listVisitors();
                     break;
                 case 2:
-                    System.out.print("Enter Visitor's Name: ");
-                    String name = scanner.nextLine();
-                    System.out.print("Enter Visitor's Age: ");
-                    int age = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.print("Enter Visitor's Phone Number: ");
-                    String phoneNumber = scanner.nextLine();
-                    System.out.print("Select Appointment Date (DD-MM-YYYY): ");
-                    String date = scanner.nextLine();
-                    System.out.println("Available Time Slots:");
-                    System.out.println("1. 09:00 AM - 10:00 AM");
-                    System.out.println("2. 11:00 AM - 12:00 PM");
-                    System.out.print("Select Time Slot: ");
-                    int timeSlot = scanner.nextInt();
-                    scanner.nextLine();
-                    String time = timeSlot == 1 ? "09:00 AM - 10:00 AM" : "11:00 AM - 12:00 PM";
-                    Visitor visitor = new Visitor(name, age, phoneNumber, date, time);
-                    clinic.addVisitor(visitor);
-                    System.out.println("Visitor " + name + "'s appointment on " + date + " at " + time + " has been booked.");
+                    addNewVisitor(scanner, clinic);
                     break;
                 case 3:
-                    System.out.println("Select the visitor you want to edit:");
-                    List<Visitor> visitors = clinic.getVisitors();
-                    for (int i = 0; i < visitors.size(); i++) {
-                        System.out.println((i + 1) + ". " + visitors.get(i).getName());
-                    }
-                    System.out.print("Choice: ");
-                    int editChoice = scanner.nextInt() - 1;
-                    scanner.nextLine();
-                    System.out.print("Enter new name: ");
-                    String newName = scanner.nextLine();
-                    System.out.print("Enter new age: ");
-                    int newAge = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.print("Enter new phone number: ");
-                    String newPhoneNumber = scanner.nextLine();
-                    clinic.editVisitorDetails(editChoice, newName, newAge, newPhoneNumber);
-                    System.out.println("Details updated.");
+                    editVisitorDetails(scanner, clinic);
                     break;
                 case 4:
-                    System.out.print("Enter date to view appointments (DD-MM-YYYY): ");
-                    String viewDate = scanner.nextLine();
-                    clinic.viewAppointmentSchedule(viewDate);
+                    viewAppointmentSchedule(scanner, clinic);
                     break;
                 case 5:
-                    // Similar to case 2 but without creating a new visitor
-                    // Just book the appointment
+                    bookAppointment(scanner, clinic);
                     break;
                 case 6:
-                    // Similar to case 3 but for editing/canceling an appointment
+                    editOrCancelAppointment(scanner, clinic);
                     break;
                 case 7:
                     System.out.println("Thank you for using the Appointment Management System!");
+                    scanner.close();
                     return;
             }
+        }
+    }
+
+    private static int validateInput(Scanner scanner, int min, int max) {
+        int input;
+        while (true) {
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+                if (input >= min && input <= max) {
+                    break;
+                } else {
+                    System.out.print("Invalid input. Please enter a number between " + min + " and " + max + ": ");
+                }
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid input. Please enter a number between " + min + " and " + max + ": ");
+            }
+        }
+        return input;
+    }
+
+    private static String validateDate(Scanner scanner) {
+        String date;
+        while (true) {
+            date = scanner.nextLine();
+            if (date.matches("\\d{2}-\\d{2}-\\d{4}")) {
+                break;
+            } else {
+                System.out.print("Invalid date format. Enter date in DD-MM-YYYY format: ");
+            }
+        }
+        return date;
+    }
+
+    private static String validateName(Scanner scanner) {
+        String name;
+        while (true) {
+            name = scanner.nextLine().trim();
+            if (name.matches("[a-zA-Z\\s]+") && !name.isEmpty()) {
+                break;
+            } else {
+                System.out.print("Invalid name. Please enter alphabetic characters only: ");
+            }
+        }
+        return name;
+    }
+
+    private static String validatePhoneNumber(Scanner scanner) {
+        String phoneNumber;
+        while (true) {
+            phoneNumber = scanner.nextLine();
+            if (phoneNumber.matches("\\d{10}")) {
+                break;
+            } else {
+                System.out.print("Invalid phone number. Please enter a 10-digit number: ");
+            }
+        }
+        return phoneNumber;
+    }
+
+    private static int validateAge(Scanner scanner) {
+        int age;
+        while (true) {
+            try {
+                age = Integer.parseInt(scanner.nextLine());
+                if (age >= 0 && age <= 150) {
+                    break;
+                } else {
+                    System.out.print("Invalid age. Please enter a number between 0 and 150: ");
+                }
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid age. Please enter a number between 0 and 150: ");
+            }
+        }
+        return age;
+    }
+
+    private static void addNewVisitor(Scanner scanner, Clinic clinic) {
+        System.out.print("Enter Visitor Name: ");
+        String name = validateName(scanner);
+        System.out.print("Enter Visitor Age: ");
+        int age = validateAge(scanner);
+        System.out.print("Enter Visitor Phone Number: ");
+        String phoneNumber = validatePhoneNumber(scanner);
+        System.out.print("Select Appointment Date (DD-MM-YYYY): ");
+        String date = validateDate(scanner);
+
+        // Check available time slots
+        List<String> availableSlots = new ArrayList<>();
+        for (int i = 0; i < TimeSlots.slots.size(); i++) {
+            String slot = TimeSlots.slots.get(i);
+            if (clinic.isTimeSlotAvailable(date, slot)) {
+                availableSlots.add(slot);
+                System.out.println((availableSlots.size()) + ". " + slot);
+            }
+        }
+
+        if (availableSlots.isEmpty()) {
+            System.out.println("No available time slots for this date.");
+            return;
+        }
+
+        System.out.print("Select Time Slot: ");
+        int timeSlot = validateInput(scanner, 1, availableSlots.size()) - 1;
+        String time = availableSlots.get(timeSlot);
+        Visitor visitor = new Visitor(name, age, phoneNumber, date, time);
+        clinic.addVisitor(visitor);
+        System.out.println("Visitor " + name + "'s appointment on " + date + " at " + time + " has been booked.");
+    }
+
+    private static void editVisitorDetails(Scanner scanner, Clinic clinic) {
+        System.out.print("Enter Visitor Index to Edit: ");
+        int visitorIndex = validateInput(scanner, 1, clinic.getVisitors().size()) - 1;
+        System.out.print("Enter New Name: ");
+        String name = validateName(scanner);
+        System.out.print("Enter New Age: ");
+        int age = validateAge(scanner);
+        System.out.print("Enter New Phone Number: ");
+        String phoneNumber = validatePhoneNumber(scanner);
+        clinic.editVisitorDetails(visitorIndex, name, age, phoneNumber);
+        System.out.println("Visitor details updated successfully.");
+    }
+
+    private static void viewAppointmentSchedule(Scanner scanner, Clinic clinic) {
+        System.out.print("Enter date to view appointments (DD-MM-YYYY): ");
+        String viewDate = validateDate(scanner);
+        clinic.viewAppointmentSchedule(viewDate);
+    }
+
+    private static void bookAppointment(Scanner scanner, Clinic clinic) {
+        System.out.print("Select Appointment Date (DD-MM-YYYY): ");
+        String date = validateDate(scanner);
+
+        // Check available time slots
+        List<String> availableSlots = new ArrayList<>();
+        for (int i = 0; i < TimeSlots.slots.size(); i++) {
+            String slot = TimeSlots.slots.get(i);
+            if (clinic.isTimeSlotAvailable(date, slot)) {
+                availableSlots.add(slot);
+                System.out.println((availableSlots.size()) + ". " + slot);
+            }
+        }
+
+        if (availableSlots.isEmpty()) {
+            System.out.println("No available time slots for this date.");
+            return;
+        }
+
+        System.out.print("Select Time Slot: ");
+        int timeSlot = validateInput(scanner, 1, availableSlots.size()) - 1;
+        String time = availableSlots.get(timeSlot);
+        clinic.bookAppointment(date, time);
+        System.out.println("Appointment on " + date + " at " + time + " has been booked.");
+    }
+
+    private static void editOrCancelAppointment(Scanner scanner, Clinic clinic) {
+        System.out.print("Enter Visitor Index to Edit or Cancel Appointment: ");
+        int visitorIndex = validateInput(scanner, 1, clinic.getVisitors().size()) - 1;
+        System.out.print("Do you want to Edit (E) or Cancel (C) the appointment? ");
+        String choice = scanner.next().toUpperCase().trim();
+
+        while (!(choice.equals("E") || choice.equals("C"))) {
+            System.out.print("Invalid choice. Enter E for Edit or C for Cancel: ");
+            choice = scanner.next().toUpperCase().trim();
+        }
+
+        scanner.nextLine();
+
+        if (choice.equals("E")) {
+            System.out.print("Select New Appointment Date (DD-MM-YYYY): ");
+            String date = validateDate(scanner);
+            System.out.print("Select New Time Slot: ");
+            int timeSlot = validateInput(scanner, 1, TimeSlots.slots.size()) - 1;
+            String time = TimeSlots.slots.get(timeSlot);
+            clinic.editAppointment(visitorIndex, date, time);
+            System.out.println("Appointment updated successfully.");
+        } else if (choice.equals("C")) {
+            clinic.cancelAppointment(visitorIndex);
+            System.out.println("Appointment canceled successfully.");
         }
     }
 }
