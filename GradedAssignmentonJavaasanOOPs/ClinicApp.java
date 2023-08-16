@@ -42,7 +42,7 @@ class Visitor {
 
 class Clinic {
     private Map<String, List<String>> appointments; // Map of date to time slots
-    private List<Visitor> visitors;
+    private static List<Visitor> visitors;
 
     public Clinic() {
         appointments = new HashMap<>();
@@ -93,11 +93,14 @@ class Clinic {
         visitors.remove(visitorIndex);
     }
 
-    public void listVisitors() {
+    public static void listVisitors() {
+        System.out.println("\nVisitors List:");
+        System.out.println("------------------------------------------------");
         for (Visitor visitor : visitors) {
-            System.out.println("Name: " + visitor.getName() + ", Age: " + visitor.getAge() + ", Phone: " + visitor.getPhoneNumber()
-                + ", Date: " + visitor.getAppointmentDate() + ", Time: " + visitor.getAppointmentTime());
+            System.out.println("Name: " + visitor.getName() + " | Age: " + visitor.getAge() + " | Phone: " + visitor.getPhoneNumber()
+                + " | Date: " + visitor.getAppointmentDate() + " | Time: " + visitor.getAppointmentTime());
         }
+        System.out.println("------------------------------------------------");
     }
 
     public List<Visitor> getVisitors() { return visitors; }
@@ -114,7 +117,9 @@ public class ClinicApp {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.println("Welcome to the Small Clinic Appointment Management System");
+            System.out.println("\n==============================================");
+            System.out.println(" Welcome to the Small Clinic Appointment Management System");
+            System.out.println("==============================================");
             System.out.println("1. View Visitors List");
             System.out.println("2. Add New Visitor");
             System.out.println("3. Edit Visitor Details");
