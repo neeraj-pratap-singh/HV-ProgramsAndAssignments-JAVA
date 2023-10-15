@@ -1,3 +1,15 @@
+// 1. Create a Java program that analyzes a directory and its subdirectories. The program should do the following:
+
+//    - Recursively traverse the directory and its subdirectories.
+
+//    - Identify and list all files with a ".txt" extension.
+
+//    - Calculate the total size (in bytes) of all ".txt" files in the directory and its subdirectories.
+
+//    - Identify and list all unique words found in these ".txt" files (case insensitive).
+
+//    - Count the frequency of each unique word and display the top 10 most frequent words.
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
