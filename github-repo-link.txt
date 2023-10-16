@@ -1,5 +1,5 @@
 Kindly go through the GitHub Repo link
 
-https://github.com/neeraj-pratap-singh/HV-ProgramsAndAssignments-JAVA
+https://github.com/neeraj-pratap-singh/HV-ProgramsAndAssignments-JAVA/tree/Graded-Assignment-on-Directory-Analysis
 
-Check folder PracticeAssignmentonFileHandling
+Check folder GradedAssignmentonDirectoryAnalysis
